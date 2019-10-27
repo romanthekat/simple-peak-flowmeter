@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -57,6 +58,7 @@ func main() {
 		return
 	}
 
+	log.Println("Starting at :3333")
 	http.ListenAndServe(":3333", r)
 }
 

@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/go-chi/docgen"
 	"github.com/go-chi/render"
 )
@@ -28,6 +29,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.URLFormat)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
+	handleCors(r)
 
 	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("pong"))
@@ -59,7 +61,23 @@ func main() {
 	}
 
 	log.Println("Starting at :3333")
-	http.ListenAndServe(":3333", r)
+	err := http.ListenAndServe(":3333", r)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handleCors(r *chi.Mux) {
+	corsSettings := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	})
+
+	r.Use(corsSettings.Handler)
 }
 
 func ListRecords(w http.ResponseWriter, r *http.Request) {
@@ -296,6 +314,7 @@ type Record struct {
 
 // Record fixture data
 var Records = []*Record{
+	{ID: "0", CreatedAt: time.Now().Add(-1 * (time.Hour * 72)), Value: 490},
 	{ID: "1", CreatedAt: time.Now().Add(-1 * (time.Hour * 48)), Value: 505},
 	{ID: "2", CreatedAt: time.Now().Add(-1 * (time.Hour * 44)), Value: 480},
 	{ID: "3", CreatedAt: time.Now().Add(-1 * (time.Hour * 24)), Value: 525},

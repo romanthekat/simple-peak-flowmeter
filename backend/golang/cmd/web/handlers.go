@@ -41,7 +41,7 @@ func (app *application) GetRecord(w http.ResponseWriter, r *http.Request) {
 func (app *application) ListRecords(w http.ResponseWriter, r *http.Request) {
 	records, err := app.records.GetAll()
 	if err != nil {
-		render.Render(w,r, ErrRender(err))
+		render.Render(w, r, ErrRender(err))
 		return
 	}
 

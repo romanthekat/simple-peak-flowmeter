@@ -1,0 +1,12 @@
+= simple-peak-flowmeter
+
+== backend
+
+=== golang
+
+Simple CRUD for records/measurements, having timestamp and number value.
+
+See also: link:backend/golang/routes.md[routes.md]
+
+==== How to use
+`docker-compose up` will start mongodb and app on port `3333`

@@ -11,9 +11,9 @@ import (
 func newTestApplication(t *testing.T) *application {
 	recordsModel := mock.NewRecordsModel()
 	return &application{
-		errorLog: log.New(ioutil.Discard, "", 0),
-		infoLog:  log.New(ioutil.Discard, "", 0),
-		records:  recordsModel,
+		errorLog:          log.New(ioutil.Discard, "", 0),
+		infoLog:           log.New(ioutil.Discard, "", 0),
+		records:           recordsModel,
 		generateRoutesDoc: newBoolPointer(false),
 	}
 }

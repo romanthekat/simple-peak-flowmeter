@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models/mock"
+	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models/mongodb"
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type application struct {
@@ -16,16 +18,26 @@ type application struct {
 	generateRoutesDoc *bool
 }
 
+var timeoutCtx, _ = context.WithTimeout(context.Background(), 7*time.Second)
+
 func main() {
 	routes := flag.Bool("routes", false, "Generate router documentation")
 	addr := flag.String("addr", ":3333", "HTTP network address")
+	dsn := flag.String("dsn", "mongodb://localhost:27017", "MongoDB data source name")
 
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	recordModel := mock.NewRecordsModel()
+	infoLog.Println("Connecting to MongoDB")
+	client, err := mongodb.OpenDB(*dsn)
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+	defer client.Disconnect(timeoutCtx)
+
+	recordModel := mongodb.NewRecordModel(client)
 
 	app := &application{
 		errorLog:          errorLog,
@@ -41,7 +53,7 @@ func main() {
 	}
 
 	infoLog.Printf("Starting HTTP server on %s", *addr)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	if err != nil {
 		errorLog.Fatal(err)
 	}

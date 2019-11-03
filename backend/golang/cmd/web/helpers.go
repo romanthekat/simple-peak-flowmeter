@@ -50,7 +50,6 @@ func ErrRender(err error) render.Renderer {
 
 var ErrNotFound = &ErrResponse{HTTPStatusCode: 404, StatusText: "Resource not found"}
 
-
 //--
 // Request and Response payloads for the REST api.
 //

@@ -70,12 +70,12 @@ function generate(data) {
 	  .attr('fill', 'none')
 	  .attr('stroke', 'steelblue')
 	  .attr('stroke-width', 1.5)
-	  .attr("stroke-linejoin', 'round')
+	  .attr('stroke-linejoin', 'round')
 	  .attr('stroke-linecap', 'round')
-	  .attr('d', line);
+	  .attr('d', line)
 
 	// svg.append("path")
 	//   .datum(data.filter(line.defined()))
 	//   .attr("stroke", "#ccc")
-	//   .attr("d", line);
+	//   .attr("d", line)
 }

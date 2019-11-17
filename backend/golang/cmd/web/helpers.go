@@ -118,3 +118,7 @@ func NewRecordListResponse(Records []*models.Record) []render.Renderer {
 	}
 	return list
 }
+
+func GetIPAddress(r *http.Request) string {
+	return r.RemoteAddr
+}

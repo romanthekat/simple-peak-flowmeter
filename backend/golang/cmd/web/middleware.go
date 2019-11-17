@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/render"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // RecordCtx middleware is used to load an Record object from
@@ -53,5 +54,22 @@ func (app *application) RecordNewValueCtx(next http.Handler) http.Handler {
 
 		ctx := context.WithValue(r.Context(), ContextKeyNewRecordValue, float32(value))
 		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+// LimitAuthorizedIp middleware limits requests to be performed from certain ip only
+func (app *application) LimitAuthorizedIp(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		callerIp := GetIPAddress(r)
+
+		if !strings.Contains(callerIp, *app.authorizedIp) {
+			app.errorLog.Printf("Authorized IP check failed, must be %s, request from %s\n",
+				*app.authorizedIp, callerIp)
+			return
+		}
+
+		app.infoLog.Println("Authorized IP check passed")
+
+		next.ServeHTTP(w, r)
 	})
 }

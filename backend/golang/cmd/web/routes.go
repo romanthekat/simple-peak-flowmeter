@@ -23,14 +23,15 @@ func (app *application) routes() http.Handler {
 	// RESTy routes for "Records" resource
 	r.Route("/records", func(r chi.Router) {
 		r.Get("/", app.ListRecords)
-		r.Post("/", app.CreateRecord) // POST /Records
 
-		r.Route("/simple-add/{NewRecordValue}", func(r chi.Router) {
+		r.With(app.LimitAuthorizedIp).Post("/", app.CreateRecord) // POST /Records
+
+		r.With(app.LimitAuthorizedIp).Route("/simple-add/{NewRecordValue}", func(r chi.Router) {
 			r.Use(app.RecordNewValueCtx)
 			r.Get("/", app.SimpleCreateRecord)
 		})
 
-		r.Route("/{RecordID}", func(r chi.Router) {
+		r.With(app.LimitAuthorizedIp).Route("/{RecordID}", func(r chi.Router) {
 			r.Use(app.RecordCtx)            // Load the *Record on the request context
 			r.Get("/", app.GetRecord)       // GET /Records/123
 			r.Put("/", app.UpdateRecord)    // PUT /Records/123

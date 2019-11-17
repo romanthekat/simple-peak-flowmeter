@@ -18,6 +18,7 @@ type application struct {
 	records           models.RecordModel
 	recordsService    *services.RecordsService
 	generateRoutesDoc *bool
+	authorizedIp      *string
 }
 
 var timeoutCtx, _ = context.WithTimeout(context.Background(), 7*time.Second)
@@ -26,11 +27,14 @@ func main() {
 	routes := flag.Bool("routes", false, "Generate router documentation")
 	addr := flag.String("addr", ":3333", "HTTP network address")
 	dsn := flag.String("dsn", "mongodb://localhost:27017", "MongoDB data source name")
+	authorizedIp := flag.String("authorizedIp", "-1", "IP address authorized for performing changes")
 
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
+	infoLog.Printf("Authorized IP: %s", *authorizedIp)
 
 	infoLog.Println("Connecting to MongoDB")
 	client, err := mongodb.OpenDB(*dsn)
@@ -47,6 +51,7 @@ func main() {
 		records:           recordModel,
 		recordsService:    services.NewRecordsService(),
 		generateRoutesDoc: routes,
+		authorizedIp:      authorizedIp,
 	}
 
 	srv := &http.Server{

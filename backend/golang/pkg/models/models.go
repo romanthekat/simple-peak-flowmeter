@@ -17,7 +17,7 @@ type Record struct {
 
 //RecordModel defines model/DAO methods for Record
 type RecordModel interface {
-	Update(id string, value float32) (string, error)
+	Update(id string, createdAt time.Time, value float32) (string, error)
 	Get(id string) (*Record, error)
 	Remove(id string) (int64, error)
 	GetAll() ([]*Record, error)

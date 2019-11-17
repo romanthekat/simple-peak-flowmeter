@@ -25,6 +25,11 @@ func (app *application) routes() http.Handler {
 		r.Get("/", app.ListRecords)
 		r.Post("/", app.CreateRecord) // POST /Records
 
+		r.Route("/simple-add/{NewRecordValue}", func(r chi.Router) {
+			r.Use(app.RecordNewValueCtx)
+			r.Get("/", app.SimpleCreateRecord)
+		})
+
 		r.Route("/{RecordID}", func(r chi.Router) {
 			r.Use(app.RecordCtx)            // Load the *Record on the request context
 			r.Get("/", app.GetRecord)       // GET /Records/123
@@ -34,6 +39,7 @@ func (app *application) routes() http.Handler {
 	})
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	r.Handle("/", fileServer)
 	r.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	app.handleRoutesFileGeneration(r)

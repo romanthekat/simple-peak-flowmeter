@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"time"
 	"unicode/utf8"
 )
 
@@ -47,7 +48,7 @@ func (m *RecordModel) getRecordsCollection() *mongo.Collection {
 }
 
 // This will insert a new record into the database or updates existing.
-func (m *RecordModel) Update(id string, value float32) (string, error) {
+func (m *RecordModel) Update(id string, createdAt time.Time, value float32) (string, error) {
 	records := m.getRecordsCollection()
 
 	upsert := true
@@ -55,8 +56,9 @@ func (m *RecordModel) Update(id string, value float32) (string, error) {
 		bson.M{"id": id},
 		bson.M{
 			"$set": bson.M{
-				"id":    id,
-				"value": value},
+				"id":        id,
+				"value":     value,
+				"createdAt": createdAt},
 		},
 		&options.UpdateOptions{
 			Upsert: &upsert,

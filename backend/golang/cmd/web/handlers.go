@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
 	"github.com/go-chi/render"
+	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -36,6 +37,7 @@ func (app *application) CreateRecord(w http.ResponseWriter, r *http.Request) {
 	}
 
 	record := data.Record
+	record.ID = uuid.New().String()
 	app.records.Update(record.ID, record.CreatedAt, record.Value)
 
 	render.Status(r, http.StatusCreated)

@@ -6,6 +6,26 @@ import (
 	"net/http"
 )
 
+const ContextKeyRecord = "record"
+const ContextKeyNewRecordValue = "newRecordValue"
+
+// SimpleCreateRecord persists the Record and returns it
+// back to the client as an acknowledgement.
+func (app *application) SimpleCreateRecord(w http.ResponseWriter, r *http.Request) {
+	newRecordValue := r.Context().Value(ContextKeyNewRecordValue).(float32)
+
+	record := app.recordsService.NewRecordByValue(newRecordValue)
+
+	_, err := app.records.Update(record.ID, record.CreatedAt, record.Value)
+	if err != nil {
+		render.Render(w, r, ErrInvalidRequest(err))
+		return
+	}
+
+	render.Status(r, http.StatusCreated)
+	render.Render(w, r, NewRecordResponse(record))
+}
+
 // CreateRecord persists the Record and returns it
 // back to the client as an acknowledgement.
 func (app *application) CreateRecord(w http.ResponseWriter, r *http.Request) {
@@ -15,11 +35,11 @@ func (app *application) CreateRecord(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Record := data.Record
-	app.records.Update(Record.ID, Record.Value)
+	record := data.Record
+	app.records.Update(record.ID, record.CreatedAt, record.Value)
 
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, NewRecordResponse(Record))
+	render.Render(w, r, NewRecordResponse(record))
 }
 
 // GetRecord returns the specific Record. You'll notice it just
@@ -27,12 +47,12 @@ func (app *application) CreateRecord(w http.ResponseWriter, r *http.Request) {
 // if we made it this far, the Record must be on the context. In case
 // its not due to a bug, then it will panic, and our Recoverer will save us.
 func (app *application) GetRecord(w http.ResponseWriter, r *http.Request) {
-	// Assume if we've reach this far, we can access the Record
+	// Assume if we've reach this far, we can access the record
 	// context because this handler is a child of the RecordCtx
 	// middleware. The worst case, the recoverer middleware will save us.
-	Record := r.Context().Value("Record").(*models.Record)
+	record := r.Context().Value(ContextKeyRecord).(*models.Record)
 
-	if err := render.Render(w, r, NewRecordResponse(Record)); err != nil {
+	if err := render.Render(w, r, NewRecordResponse(record)); err != nil {
 		render.Render(w, r, ErrRender(err))
 		return
 	}
@@ -53,33 +73,33 @@ func (app *application) ListRecords(w http.ResponseWriter, r *http.Request) {
 
 // UpdateRecord updates an existing Record in our persistent store.
 func (app *application) UpdateRecord(w http.ResponseWriter, r *http.Request) {
-	Record := r.Context().Value("Record").(*models.Record)
+	record := r.Context().Value(ContextKeyRecord).(*models.Record)
 
-	data := &RecordRequest{Record: Record}
+	data := &RecordRequest{Record: record}
 	if err := render.Bind(r, data); err != nil {
 		render.Render(w, r, ErrInvalidRequest(err))
 		return
 	}
-	Record = data.Record
-	app.records.Update(Record.ID, Record.Value)
+	record = data.Record
+	app.records.Update(record.ID, record.CreatedAt, record.Value)
 
-	render.Render(w, r, NewRecordResponse(Record))
+	render.Render(w, r, NewRecordResponse(record))
 }
 
 // DeleteRecord removes an existing Record from our persistent store.
 func (app *application) DeleteRecord(w http.ResponseWriter, r *http.Request) {
 	var err error
 
-	// Assume if we've reach this far, we can access the Record
+	// Assume if we've reach this far, we can access the record
 	// context because this handler is a child of the RecordCtx
 	// middleware. The worst case, the recoverer middleware will save us.
-	Record := r.Context().Value("Record").(*models.Record)
+	record := r.Context().Value(ContextKeyRecord).(*models.Record)
 
-	_, err = app.records.Remove(Record.ID)
+	_, err = app.records.Remove(record.ID)
 	if err != nil {
 		render.Render(w, r, ErrInvalidRequest(err))
 		return
 	}
 
-	render.Render(w, r, NewRecordResponse(Record))
+	render.Render(w, r, NewRecordResponse(record))
 }

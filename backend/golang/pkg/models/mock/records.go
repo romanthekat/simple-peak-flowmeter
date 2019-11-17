@@ -11,7 +11,7 @@ func NewRecordsModel() *RecordModel {
 	return &RecordModel{}
 }
 
-func (r RecordModel) Update(id string, value float32) (string, error) {
+func (r RecordModel) Update(id string, createdAt time.Time, value float32) (string, error) {
 	panic("implement me")
 }
 

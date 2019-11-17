@@ -5,6 +5,7 @@ import (
 	"flag"
 	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
 	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models/mongodb"
+	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/services"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +16,7 @@ type application struct {
 	errorLog          *log.Logger
 	infoLog           *log.Logger
 	records           models.RecordModel
+	recordsService    *services.RecordsService
 	generateRoutesDoc *bool
 }
 
@@ -43,6 +45,7 @@ func main() {
 		errorLog:          errorLog,
 		infoLog:           infoLog,
 		records:           recordModel,
+		recordsService:    services.NewRecordsService(),
 		generateRoutesDoc: routes,
 	}
 

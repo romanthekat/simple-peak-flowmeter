@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
 	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models/mongodb"
 	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/services"
@@ -17,27 +16,29 @@ type application struct {
 	infoLog           *log.Logger
 	records           models.RecordModel
 	recordsService    *services.RecordsService
-	generateRoutesDoc *bool
-	authorizedIp      *string
+	generateRoutesDoc bool
+	authorizedIp      string
 }
 
 var timeoutCtx, _ = context.WithTimeout(context.Background(), 7*time.Second)
 
 func main() {
-	routes := flag.Bool("routes", false, "Generate router documentation")
-	addr := flag.String("addr", ":3333", "HTTP network address")
-	dsn := flag.String("dsn", "mongodb://localhost:27017", "MongoDB data source name")
-	authorizedIp := flag.String("authorizedIp", "-1", "IP address authorized for performing changes")
-
-	flag.Parse()
+	var routes bool
+	if getEnv("ROUTES", "false") == "true" {
+		routes = true
+	}
+	addr := getEnv("ADDR", ":3333")
+	dsn := getEnv("DSN", "mongodb://mongo:27017")
+	authorizedIp := getEnv("AUTHORIZED_IP", "-1")
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
-	infoLog.Printf("Authorized IP: %s", *authorizedIp)
+	infoLog.Printf("Authorized IP: %s", authorizedIp)
+	infoLog.Printf("DSN: %s", dsn)
 
 	infoLog.Println("Connecting to MongoDB")
-	client, err := mongodb.OpenDB(*dsn)
+	client, err := mongodb.OpenDB(dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
@@ -55,14 +56,21 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:     *addr,
+		Addr:     addr,
 		ErrorLog: errorLog,
 		Handler:  app.routes(),
 	}
 
-	infoLog.Printf("Starting HTTP server on %s", *addr)
+	infoLog.Printf("Starting HTTP server on %s", addr)
 	err = srv.ListenAndServe()
 	if err != nil {
 		errorLog.Fatal(err)
 	}
+}
+
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }

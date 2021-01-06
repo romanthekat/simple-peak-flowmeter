@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/docgen"
 	"github.com/go-chi/render"
 	"net/http"
+	"strings"
 )
 
 func (app *application) routes() http.Handler {
@@ -40,12 +41,40 @@ func (app *application) routes() http.Handler {
 	})
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	r.Handle("/", fileServer)
-	r.Handle("/static/", http.StripPrefix("/static", fileServer))
+	r.Handle("/", handleMimeType(app, fileServer))
+	r.Handle("/static/", http.StripPrefix("/static", handleMimeType(app, fileServer)))
 
 	app.handleRoutesFileGeneration(r)
 
 	return r
+}
+
+func handleMimeType(app *application, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		/*if strings.HasSuffix(r.URL.Path, "/") {
+			http.NotFound(w, r)
+			return
+		}*/
+
+		path := r.URL.Path
+
+		app.infoLog.Println("fileserver path:", path)
+
+		var contentType string
+		if strings.HasSuffix(path, ".css") {
+			contentType = "text/css"
+		} else if strings.HasSuffix(path, ".js") {
+			contentType = "text/javascript"
+		} else if strings.HasSuffix(path, ".html") {
+			contentType = "text/html"
+		} else {
+			contentType = "text/html"
+		}
+
+		w.Header().Add("Content-Type", contentType)
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func handleCors(r *chi.Mux) {
@@ -65,7 +94,7 @@ func (app *application) handleRoutesFileGeneration(r *chi.Mux) {
 	// Passing -routes to the program will generate docs for the above
 	// router definition. See the `routes.json` file in this folder for
 	// the output.
-	if *app.generateRoutesDoc {
+	if app.generateRoutesDoc {
 		// fmt.Println(docgen.JSONRoutesDoc(r))
 		fmt.Println(docgen.MarkdownRoutesDoc(r, docgen.MarkdownOpts{
 			ProjectPath: "github.com/EvilKhaosKat/simple-peak-flowmeter/backend/golang",

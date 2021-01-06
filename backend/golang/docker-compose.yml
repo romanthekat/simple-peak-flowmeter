@@ -3,15 +3,16 @@ services:
   web:
     build:
       context: .
-      args:
-        - AUTHORIZED_IP_BUILDTIME=${AUTHORIZED_IP}
     ports:
       - "3333:3333"
+    container_name: "simple-peak-flowmeter"
     depends_on:
       - mongo
+    environment:
+      AUTHORIZED_IP: "127.0.0.1"
+      DSN: "mongodb://mongo:27017"
   mongo:
     image: "mongo:latest"
+    container_name: "mongo"
     volumes:
       - ./db:/data/db
-    ports:
-      - "27017:27017"

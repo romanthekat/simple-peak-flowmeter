@@ -34,7 +34,7 @@ func (app *application) RecordCtx(next http.Handler) http.Handler {
 	})
 }
 
-// RecordNewValueCtx middleware is used to load an record value object from
+// RecordNewValueCtx middleware is used to load a record value object from
 // the URL parameters passed through as the request. In case of error returns 400
 func (app *application) RecordNewValueCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -62,9 +62,9 @@ func (app *application) LimitAuthorizedIp(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		callerIp := GetIPAddress(r)
 
-		if !strings.Contains(callerIp, *app.authorizedIp) {
+		if !strings.Contains(callerIp, app.authorizedIp) {
 			app.errorLog.Printf("Authorized IP check failed, must be %s, request from %s\n",
-				*app.authorizedIp, callerIp)
+				app.authorizedIp, callerIp)
 			return
 		}
 

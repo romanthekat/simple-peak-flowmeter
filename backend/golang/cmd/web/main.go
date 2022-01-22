@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models/mongodb"
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/services"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models/mongodb"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/services"
 	"log"
 	"net/http"
 	"os"

@@ -1,4 +1,4 @@
-module github.com/EvilKhaosKat/simple-peak-flowmeter
+module github.com/romanthekat/simple-peak-flowmeter
 
 go 1.15
 

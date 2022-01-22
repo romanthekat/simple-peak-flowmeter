@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models/mock"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models/mock"
 	"io/ioutil"
 	"log"
 	"net/http"

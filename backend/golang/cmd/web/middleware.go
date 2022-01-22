@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"net/http"

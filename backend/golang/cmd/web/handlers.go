@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
 	"net/http"

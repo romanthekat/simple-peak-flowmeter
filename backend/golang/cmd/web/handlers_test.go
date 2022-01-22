@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models/mock"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models/mock"
 	"log"
 	"net/http"
 	"net/http/httptest"

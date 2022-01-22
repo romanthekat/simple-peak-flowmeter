@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/EvilKhaosKat/simple-peak-flowmeter/pkg/models"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models"
 	"time"
 )
 import "github.com/google/uuid"

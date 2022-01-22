@@ -97,7 +97,7 @@ func (app *application) handleRoutesFileGeneration(r *chi.Mux) {
 	if app.generateRoutesDoc {
 		// fmt.Println(docgen.JSONRoutesDoc(r))
 		fmt.Println(docgen.MarkdownRoutesDoc(r, docgen.MarkdownOpts{
-			ProjectPath: "github.com/EvilKhaosKat/simple-peak-flowmeter/backend/golang",
+			ProjectPath: "github.com/romanthekat/simple-peak-flowmeter/backend/golang",
 			Intro:       "Simple peak flowmeter golang generated docs.",
 		}))
 	}

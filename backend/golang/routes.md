@@ -1,5 +1,5 @@
 INFO	2019/11/03 14:12:09 Connecting to MongoDB
-# github.com/EvilKhaosKat/simple-peak-flowmeter/backend/golang
+# github.com/romanthekat/simple-peak-flowmeter/backend/golang
 
 Simple peak flowmeter golang generated docs.
 

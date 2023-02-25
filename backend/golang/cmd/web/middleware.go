@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/romanthekat/simple-peak-flowmeter/pkg/models"
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
+	"github.com/romanthekat/simple-peak-flowmeter/pkg/models"
 	"net/http"
 	"strconv"
 	"strings"

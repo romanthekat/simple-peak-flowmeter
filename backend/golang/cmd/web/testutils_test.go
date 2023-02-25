@@ -14,7 +14,7 @@ func newTestApplication(t *testing.T) *application {
 		errorLog:          log.New(ioutil.Discard, "", 0),
 		infoLog:           log.New(ioutil.Discard, "", 0),
 		records:           recordsModel,
-		generateRoutesDoc: newBoolPointer(false),
+		generateRoutesDoc: false,
 	}
 }
 
@@ -24,8 +24,4 @@ func newGetRequest(t *testing.T, url string) *http.Request {
 		t.Fatal(err)
 	}
 	return r
-}
-
-func newBoolPointer(value bool) *bool {
-	return &value
 }
